@@ -1,13 +1,36 @@
 <?php
-require '../utils/dotenv.php';
+require 'utils/dotenv.php';
 
-$host = $_ENV['DB_HOST'];
-$port = $_ENV['DB_PORT'];
-$user = $_ENV['DB_USER'];
-$pass = $_ENV['DB_PASS'];
-$db = $_ENV['DB_DATABASE'];
+class Connection
+{
+    static public function infodatabase()
+    {
+        $infodb = array(
+            "host" => $_ENV['DB_HOST'],
+            "port" => $_ENV['DB_PORT'],
+            "user" => $_ENV['DB_USER'],
+            "pass" => $_ENV['DB_PASS'],
+            "db" => $_ENV['DB_DATABASE'],
+        );
 
-$con = new mysqli($host, $user, $pass, $db, $port);
-if ($con->connect_errno) {
-    echo "Fallo al conectar a MySQL: (" . $con->connect_errno . ") " . $con->connect_error;
+        return $infodb;
+    }
+
+    static public function connect()
+    {
+        try {
+            $con = new PDO(
+                "mysql:host=" . Connection::infodatabase()['host'] .
+                    ";dbname=" . Connection::infodatabase()['db'],
+                Connection::infodatabase()['user'],
+                Connection::infodatabase()['pass']
+            );
+
+            $con->exec("set names utf8");
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+
+        return $con;
+    }
 }
