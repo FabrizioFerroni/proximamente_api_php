@@ -4,12 +4,13 @@ $routesArray = array_filter($routesArray);
 
 // Si la ruta principal esta vacía
 if (count($routesArray) == 0) {
+    $header =  header('Content-Type: application/json; charset=utf-8');
 
     $json = array(
-        'status' => 404,
         'result' => 'Not Found'
     );
-
+    
+    $header;
     echo json_encode($json, http_response_code(404));
 
     return;
@@ -22,7 +23,7 @@ if (count($routesArray) == 1 && isset($rm)) {
         Peticiones GET
     =========================================*/
     if($rm == 'GET'){
-       include ('services/get.services.php');
+       include ('controllers/get.controller.php');
     }
 
     /*=========================================
